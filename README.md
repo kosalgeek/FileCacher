@@ -91,7 +91,7 @@ manager.deleteAllCaches();
  * Get more free source code at https://github.com/kosalgeek
  * Watch my video tutorials at my YouTube channel https://youtube.com/user/oumsaokosal
  * Like my Facebook Page at https://facebook.com/kosalgeek
- * Follow me on Twitter https://twitter.com/kosalgeek and https://twitter.com/okosal
+ * Follow me on Twitter https://twitter.com/okosal
  * Get more tutorials at http://www.kosalgeek.com and http://www.top12review.com
  
 # LICENSE

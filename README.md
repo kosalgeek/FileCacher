@@ -40,7 +40,28 @@ if(stringCacher.hasCache()){
 }
 ```
 
-### Additional Method
+### Additional Methods
+#### Method ``appendOrWrite()`` to append an object if file exists, or create a new file and write an object to it.
+```java
+try {
+  stringCacher.appendOrWrite("add more text.");
+} catch (IOException e) {
+  e.printStackTrace();
+}
+```
+
+#### Method ``getAllCaches()`` return a ``List`` of all the caches.
+```java
+try {
+  List<String> list = stringCacher.getAllCaches();
+  for(String text : list){
+    //do something with text
+  }
+} catch (IOException e) {
+  e.printStackTrace();
+}
+```
+
 #### Method ``clearCache()`` to clear cache
 ```java
 try {

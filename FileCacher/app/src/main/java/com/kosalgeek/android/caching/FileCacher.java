@@ -2,12 +2,15 @@ package com.kosalgeek.android.caching;
 
 import android.content.Context;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * File Cacher is for caching an object.
@@ -19,7 +22,7 @@ import java.io.ObjectOutputStream;
  *
  * @param <T> generic T type
  */
-public final class FileCacher<T> {
+public class FileCacher<T>{
     private final String LOG = this.getClass().getName();
 
     private Context context;
@@ -52,6 +55,33 @@ public final class FileCacher<T> {
     }
 
     /**
+     * Append an object if cache file exists. Otherwise, create a new file and write an object.
+     * @param object any object which could be anything, e.g. int, String[], ArrayList<Object> etc.
+     * @throws IOException
+     */
+    public void appendOrWriteCache(T object) throws IOException {
+        FileOutputStream fos;
+        ObjectOutputStream oos;
+        if(hasCache()){
+            fos = context.openFileOutput(fileName, Context.MODE_APPEND);
+            oos = new ObjectOutputStream(fos){
+                protected void writeStreamHeader() throws IOException {
+                    reset();
+                }
+            };
+        }
+        else{
+            fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+        }
+        oos.writeObject(object);
+        oos.flush();
+        oos.close();
+
+        fos.close();
+    }
+
+    /**
      * Read object back from the cache.
      * Make sure it is not NULL before using it.
      *
@@ -70,6 +100,29 @@ public final class FileCacher<T> {
         }
         fis.close();
         return (T)object;
+    }
+
+    /**
+     * get all caches
+     * @return List of caches
+     * @throws IOException
+     */
+    public List<T> getAllCaches() throws IOException {
+        FileInputStream fis = context.openFileInput(fileName);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        Object object = null;
+        List<T> cacheList = new ArrayList<T>();
+        try {
+            while((object = ois.readObject()) != null){
+                cacheList.add((T) object);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (EOFException e){
+            fis.close();
+        }
+
+        return cacheList;
     }
 
     /**
